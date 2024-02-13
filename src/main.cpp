@@ -1,13 +1,20 @@
-//
-//  c++_empty
-//  
+#include "System.h"
+#include "Session.h"
 
-#include <iostream>
-#include <string>
+#include "Constants.h"
 
-int main(int argc, char* argv[]) {
-	std::string s1 = "Hello World";
-	std::cout << s1 << std::endl;
-	
+void setScene()
+{
+	// Static
+	// Object *object = Object::getInstance(720);
+	// ses.add(object);
+	return;
+}
+
+int main(int argc, char *argv[])
+{
+	Session ses;
+	setScene();
+	ses.run();
 	return 0;
 }
