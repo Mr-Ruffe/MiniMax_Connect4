@@ -46,10 +46,10 @@ void Session::run()
 			}
 		}
 
-		SDL_SetRenderDrawColor(sys.get_ren(), 255, 255, 255, 255);
-		SDL_RenderClear(sys.get_ren());
+		SDL_SetRenderDrawColor(sys.getRen(), 255, 255, 255, 255);
+		SDL_RenderClear(sys.getRen());
 		for (Component *c : comps)
 			c->draw();
-		SDL_RenderPresent(sys.get_ren());
+		SDL_RenderPresent(sys.getRen());
 	}
 }

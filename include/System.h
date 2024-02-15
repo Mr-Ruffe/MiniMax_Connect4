@@ -10,8 +10,8 @@ class System
 public:
 	System();
 	~System();
-	SDL_Renderer* get_ren() const;
-	TTF_Font* get_font() const;
+	SDL_Renderer* getRen() const;
+	TTF_Font* getFont() const;
 private:
 	SDL_Window* win;
 	SDL_Renderer* ren;

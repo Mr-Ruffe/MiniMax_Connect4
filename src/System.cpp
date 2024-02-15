@@ -25,12 +25,12 @@ System::~System()
 	SDL_Quit();
 }
 
-SDL_Renderer *System::get_ren() const
+SDL_Renderer *System::getRen() const
 {
 	return ren;
 }
 
-TTF_Font *System::get_font() const
+TTF_Font *System::getFont() const
 {
 	return font;
 }
