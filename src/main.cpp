@@ -3,17 +3,19 @@
 
 #include "Constants.h"
 #include "BoardTile.h"
+#include "Players.h"
+#include "Tile.h"
 
 void setScene(Session &ses)
 {
-	for (int i = 0; i < constants::sizeX; i++)
-	{
-		for (int j = 0; j < constants::sizeY; j++)
-		{
-			BoardTile *boardTile = BoardTile::getInstance(50 + 100*i, 100 + 100*j);
-			ses.add(boardTile);
-		}
-	}
+	// Displaying the board
+	BoardTile *boardTile = BoardTile::getInstance(50, 100, constants::sizeX, constants::sizeY);
+	ses.add(boardTile);
+
+	// Treating the creation of objects
+	Players *players = Players::getInstance(ses);
+	ses.add(players);
+
 	// Object *object = Object::getInstance(720);
 	// ses.add(object);
 	return;

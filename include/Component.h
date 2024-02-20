@@ -11,8 +11,11 @@ public:
 	virtual void mouseUp(const SDL_Event&) {}
 	virtual void keyDown(const SDL_Event&) {}
 	virtual void keyUp(const SDL_Event&) {}
+	virtual void tick() {}
 	virtual void draw() const = 0;
 	const SDL_Rect& getRect() const { return rect; }
+	void moveX(int x) { rect.x += x; }
+	void moveY(int y) { rect.y += y; }
 protected:
 	Component(int x, int y, int w, int h) :rect{ x,y,w,h } {}
 private:

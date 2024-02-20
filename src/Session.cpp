@@ -48,8 +48,11 @@ void Session::run()
 
 		SDL_SetRenderDrawColor(sys.getRen(), 255, 255, 255, 255);
 		SDL_RenderClear(sys.getRen());
-		for (Component *c : comps)
-			c->draw();
+		for (auto it = comps.rbegin(); it != comps.rend(); ++it) {
+			(*it)->tick();
+			(*it)->draw();
+		}
+		
 		SDL_RenderPresent(sys.getRen());
 	}
 }
