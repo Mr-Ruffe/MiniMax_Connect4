@@ -16,6 +16,8 @@ public:
 	const SDL_Rect& getRect() const { return rect; }
 	void moveX(int x) { rect.x += x; }
 	void moveY(int y) { rect.y += y; }
+	void setX(int x) { rect.x = x; }
+	void setY(int y) { rect.y = y; }
 protected:
 	Component(int x, int y, int w, int h) :rect{ x,y,w,h } {}
 private:

@@ -15,14 +15,14 @@
 class Tile : public Component
 {
 public:
-    static Tile *getInstance(int x, int y, common::Turn turn)
+    static Tile *getInstance(int x, int y, int xInit, common::Turn turn)
 	{
         std::string image;
         if (turn == common::Turn::firstPlayer)
             image = constants::gResPath + "images/green_tile.png";
         else
             image = constants::gResPath + "images/red_tile.png";
-		return new Tile(x, y, image);
+		return new Tile(x, y, xInit, image);
 	}
 
 	virtual ~Tile()
@@ -38,33 +38,43 @@ public:
 	}
 	virtual void tick() 
     {
-        if (!finalPos) {
+        if (finalPos)
+            return;
+        counter++;
+        if (counter >= 5) {
+            counter = 0; 
             SDL_Rect rect = getRect();
-            if (rect.y >= targetY)
-                finalPos = true;
-            else
+            if (rect.x > targetX)
+                moveX(-1);
+            else if (rect.x < targetX)
+                moveX(1);
+            else 
             {
-                counter++;
-                if (counter >= 10) {
-                    moveY(1);
-                    counter = 0;
-                }
+                if (rect.y >= targetY)
+                    finalPos = true;
+                else
+                  moveY(1);
             }
         }
     }
+
+    bool inPlace() {
+        return finalPos;
+    }
+
 	void destroyTexture() { SDL_DestroyTexture(texture); }
 
 	SDL_Texture *getTexture() const { return texture; }
 
 protected:
-	Tile(int x, int y, const std::string &path) : Component(x*100+50, -50, 100, 100), targetY(constants::sizeY*100 - y*100)
+	Tile(int x, int y, int xInit, const std::string &path) : Component(xInit, -50, 100, 100), targetX(x*100+50), targetY(constants::sizeY*100 - y*100)
 	{
 		texture = IMG_LoadTexture(sys.getRen(), path.c_str());
 	}
 
 private:
 	SDL_Texture *texture;
-    const int targetY;
+    const int targetX, targetY;
     int counter = 0;
     bool finalPos = false;
 };
