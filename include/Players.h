@@ -50,14 +50,13 @@ public:
 		common::Turn turn = gameBoard.getTurn();
 		int col = getClosestCol();
 		if (col >= 0 && col < constants::sizeX) {
-			int row = gameBoard.placeMarker(col);
+			int row = gameBoard.peekMarker(col);
 			if (row != -1) {
 				lastTile = Tile::getInstance(col, row, mouseX-50, turn);
 				ses.add(lastTile);
 				boardEmpty = false;
 			}
 		}
-		
 	}
 
 	void destroyTexture() { 
@@ -80,6 +79,7 @@ protected:
     }
 
 private:
+	// Texture references (player 1 and player 2 marker)
 	SDL_Texture *texture1, *texture2;
 
 	// Reference to check whether tile is inplace or not
