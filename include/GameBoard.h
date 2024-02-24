@@ -52,7 +52,7 @@ public:
     bool placeMinMaxMarker(int &col, int &row) {
         col = 5;
         row = placeMarker(col);
-        return true;
+        return (row != -1);
     }
 
     // Changes the turns between player 1 and player 2

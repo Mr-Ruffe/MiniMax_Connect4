@@ -50,7 +50,7 @@ public:
 		common::Turn turn = gameBoard.getTurn();
 		int col = getClosestCol();
 		if (col >= 0 && col < constants::sizeX) {
-			int row = gameBoard.peekMarker(col);
+			int row = gameBoard.placeMarker(col);
 			if (row != -1) {
 				lastTile = Tile::getInstance(col, row, mouseX-50, turn);
 				ses.add(lastTile);
