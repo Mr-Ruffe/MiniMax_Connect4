@@ -6,10 +6,15 @@
 #include "Component.h"
 #include "Common.h"
 #include "Constants.h"
+#include "Label.h"
 
 #include "Tile.h"
 #include "GameBoard.h"
 #include "MiniMax.h"
+
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 class Players : public Component
 {
@@ -26,6 +31,10 @@ public:
 
 		if (gameBoard.isPlayer())
 		{
+			if (updatingLabels && lastTile->inPlace() && constants::visualizeMinimax && !gameBoard.isGameOver()) {
+				miniMax(); // Update minimax for player
+				updatingLabels = false;
+			}
 			if (outputX)
 				mouseX = outputX;
 			setX(mouseX - 50);
@@ -33,6 +42,7 @@ public:
 		else if ((boardEmpty || lastTile->inPlace()) && !gameBoard.isGameOver())
 		{
 			placeMarker();
+			updatingLabels = true;
 		}
 	}
 
@@ -70,7 +80,17 @@ protected:
 		texture1 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/green_tile.png").c_str());
 		texture2 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/red_tile.png").c_str());
 		if (constants::visualizeMinimax)
+		{
 			miniMax();
+			for (int i = 0; i < constants::sizeX; i++)
+			{
+				std::stringstream ss;
+				ss << std::fixed << std::setprecision(2) << minimaxVector[i];
+				Label *currentLabel = Label::getInstance(75 + i * 100, 700, 50, 50, ss.str());
+				ses.add(currentLabel);
+				labelVector.push_back(currentLabel);
+			}
+		}
 	}
 
 private:
@@ -91,8 +111,7 @@ private:
 				lastTile = Tile::getInstance(col, row, mouseX - 50, turn);
 				ses.add(lastTile);
 				boardEmpty = false;
-				if (gameBoard.isPlayer() && constants::visualizeMinimax)
-					miniMax(); // Update minimax for player
+				
 				return true;
 			}
 		}
@@ -103,15 +122,34 @@ private:
 	{
 		common::Turn turn = gameBoard.getTurn();
 		std::vector<std::vector<int>> matrix = gameBoard.getMatrixCopy();
-		MoveScore minimax = MiniMax::minimaxAll(matrix, 9, (turn == common::Turn::firstPlayer));
+		MoveScore minimax = MiniMax::minimaxAll(matrix, constants::searchDepth, (turn == common::Turn::firstPlayer));
 		minimaxVector = minimax.evaluationVector;
 		if (constants::visualizeMinimax)
 		{
 			for (double d : minimaxVector)
 				std::cout << d << ", ";
 			std::cout << std::endl;
+			updateLabels();
 		}
 		return minimax.move;
+	}
+
+	int getClosestCol() const
+	{
+		return (mouseX - 50) / 100;
+	}
+
+	void updateLabels()
+	{
+		if (labelVector.empty()) {
+			return;
+		}
+		for (int i = 0; i < constants::sizeX; i++)
+		{
+			std::stringstream ss;
+			ss << std::fixed << std::setprecision(2) << minimaxVector[i];
+			labelVector[i]->setText(ss.str());
+		}
 	}
 
 	int frame = 0;
@@ -126,6 +164,8 @@ private:
 
 	bool gameOver = false;
 
+	bool updatingLabels = false;
+
 	// Reference to session in order to add objects
 	Session &ses;
 
@@ -135,13 +175,11 @@ private:
 	// minimax vector
 	std::vector<double> minimaxVector;
 
+	// Label vector
+	std::vector<Label *> labelVector;
+
 	// Gameboard object
 	GameBoard gameBoard;
-
-	int getClosestCol()
-	{
-		return (mouseX - 50) / 100;
-	}
 };
 
 #endif
