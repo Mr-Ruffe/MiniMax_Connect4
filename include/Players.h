@@ -30,7 +30,7 @@ public:
 				mouseX = outputX;
 			setX(mouseX - 50);
 		}
-		else if (boardEmpty || lastTile->inPlace() || gameBoard.isGameOver())
+		else if ((boardEmpty || lastTile->inPlace()) && !gameBoard.isGameOver())
 		{
 			placeMarker();
 		}
@@ -69,6 +69,8 @@ protected:
 	{
 		texture1 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/green_tile.png").c_str());
 		texture2 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/red_tile.png").c_str());
+		if (constants::visualizeMinimax)
+			miniMax();
 	}
 
 private:
@@ -89,6 +91,8 @@ private:
 				lastTile = Tile::getInstance(col, row, mouseX - 50, turn);
 				ses.add(lastTile);
 				boardEmpty = false;
+				if (gameBoard.isPlayer() && constants::visualizeMinimax)
+					miniMax(); // Update minimax for player
 				return true;
 			}
 		}
@@ -101,11 +105,16 @@ private:
 		std::vector<std::vector<int>> matrix = gameBoard.getMatrixCopy();
 		MoveScore minimax = MiniMax::minimaxAll(matrix, 9, (turn == common::Turn::firstPlayer));
 		minimaxVector = minimax.evaluationVector;
-		for (double d : minimaxVector)
-        	std::cout << d << ", ";
-    	std::cout << std::endl;
+		if (constants::visualizeMinimax)
+		{
+			for (double d : minimaxVector)
+				std::cout << d << ", ";
+			std::cout << std::endl;
+		}
 		return minimax.move;
 	}
+
+	int frame = 0;
 
 	// Texture references (player 1 and player 2 marker)
 	SDL_Texture *texture1, *texture2;

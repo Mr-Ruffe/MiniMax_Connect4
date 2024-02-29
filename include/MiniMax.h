@@ -28,7 +28,7 @@ public:
             {
                 double eval = minimax(placeMarker(matrix, move, maximizingPlayer), depth-1, -2.0, 2.0, !maximizingPlayer);
                 bestEval.evaluationVector[move] = eval;
-                if (eval > bestEval.evaluation && maximizingPlayer || eval < bestEval.evaluation && !maximizingPlayer) {
+                if ((eval > bestEval.evaluation && maximizingPlayer) || (eval < bestEval.evaluation && !maximizingPlayer)) {
                     bestEval.evaluation = eval;
                     bestEval.move = move;
                 }
@@ -85,29 +85,33 @@ private:
     }
 
     static double evaluateScore(const std::vector<std::vector<int>> &matrix) {
-        double score = 0.0;
-        
+        int amountOfMaxiWins = findAmountOfWins(true, matrix);
+        int amountOfMiniWins = findAmountOfWins(false, matrix);
+
+        //std::cout << "maxi: " << amountOfMaxiWins << ", mini: " << amountOfMiniWins << static_cast<double>(2*amountOfMaxiWins)/(amountOfMaxiWins+amountOfMiniWins)-1 << std::endl;
+
+        if (amountOfMaxiWins+amountOfMiniWins != 0)
+            return static_cast<double>(amountOfMaxiWins-amountOfMiniWins)/(amountOfMaxiWins+amountOfMiniWins);
+        else
+            return 0.0;
+    }
+
+    static int findAmountOfWins(bool maximizingPlayer, const std::vector<std::vector<int>> &matrix) {
         // Check horizontally
+        int amountOfWins = 0;
         for (int j = 0; j < constants::sizeY; j++)
         {
             int counter = 0;
-            int current = 0;
-            bool freeBefore = false;
-            bool freeAfter = false;
             for (int i = 0; i < constants::sizeX; i++)
             {
-                if (current == matrix[i][j] && matrix[i][j] != 0) 
+                if (matrix[i][j] != (maximizingPlayer ? -1 : 1)) 
                     counter++;
                 else {
-                    if (counter >= 2)
-                        score += calculateScore(counter, current, freeBefore, matrix[i][j]==0);
                     counter = 1;
-                    current = matrix[i][j];
-                    if (matrix[i][j] == 0)
-                        freeBefore = true;
-                    else
-                        freeBefore = false;
                 }
+                if (counter >= 4) {
+                    amountOfWins++;
+                } 
             }
         }
 
@@ -115,22 +119,15 @@ private:
         for (int i = 0; i < constants::sizeX; i++)
         {
             int counter = 0;
-            int current = 0;
-            bool freeBefore = false;
-            bool freeAfter = false;
             for (int j = 0; j < constants::sizeY; j++)
             {
-                if (current == matrix[i][j] && matrix[i][j] != 0) 
+                if (matrix[i][j] != (maximizingPlayer ? -1 : 1)) 
                     counter++;
                 else {
-                    if (counter >= 2)
-                        score += calculateScore(counter, current, freeBefore, matrix[i][j]==0);
                     counter = 1;
-                    current = matrix[i][j];
-                    if (matrix[i][j] == 0)
-                        freeBefore = true;
-                    else
-                        freeBefore = false;
+                }
+                if (counter >= 4) {
+                    amountOfWins++;
                 }
             }
         }
@@ -140,48 +137,33 @@ private:
         
         for (int k = 0; k < diagonalMaxIndex; k++) {
             int counterBottomLeft = 0;
-            int currentBottomLeft = 0;
             int counterBottomRight = 0;
-            int currentBottomRight = 0;
             for (int i = 3+k; i > 0; i--) {
                 int j = 3+k-i;
                 if (i < constants::sizeX && j < constants::sizeY && j >= 0) {
                     // Bottom-left -> top-right
-                    if (currentBottomLeft == matrix[i][j] && matrix[i][j] != 0) 
+                    if (matrix[i][j] != (maximizingPlayer ? -1 : 1))
                         counterBottomLeft++;
                     else {
                         counterBottomLeft = 1;
-                        currentBottomLeft = matrix[i][j];
                     }
                     if (counterBottomLeft >= 4) {
-                        return currentBottomLeft;
+                        amountOfWins++;
                     }
                     // Bottom-right -> top-left
                     int iRight = constants::sizeX-i;
-                    if (currentBottomRight == matrix[iRight][j] && matrix[iRight][j] != 0) 
+                    if (matrix[iRight][j] != (maximizingPlayer ? -1 : 1))  
                         counterBottomRight++;
                     else {
                         counterBottomRight = 1;
-                        currentBottomRight = matrix[iRight][j];
                     }
                     if (counterBottomRight >= 4) {
-                        return currentBottomRight;
+                        amountOfWins++;
                     }
                 }
             }
         }
-        return score;
-    }
-
-    static double calculateScore(int counter, int current, bool freeBefore, bool freeAfter) {
-        // Free 3s (+0.05 per side)
-        // Free 3s (-0.05 per side)
-        // Free 2s (+0.02 per side)
-        // Free 2s (-0.02 per side)
-        double free = 0.02;
-        if (counter > 2)
-            free = 0.05;
-        return free*current*((freeBefore && freeAfter) ? 1 : 2);
+        return amountOfWins; 
     }
 
     static std::vector<std::vector<int>> placeMarker(std::vector<std::vector<int>> matrix, int column, bool maximizingPlayer) {
