@@ -93,11 +93,11 @@ public:
                 int j = 3+k-i;
                 if (i < constants::sizeX && j < constants::sizeY && j >= 0) {
                     // Bottom-left -> top-right
-                    if (currentBottomLeft == matrix[i][j] && matrix[i][j] != 0) 
+                    if (currentBottomLeft == matrix[i-1][j] && matrix[i-1][j] != 0) 
                         counterBottomLeft++;
                     else {
                         counterBottomLeft = 1;
-                        currentBottomLeft = matrix[i][j];
+                        currentBottomLeft = matrix[i-1][j];
                     }
                     if (counterBottomLeft >= 4) {
                         return currentBottomLeft;
