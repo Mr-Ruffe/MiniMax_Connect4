@@ -16,6 +16,9 @@ COMPILER_FLAGS = -std=c++17 -Wall -O0 -g
 # SOURCE FILES
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 
+# RESOURCE DIRECTORY
+RESOURCE_DIR = resources
+
 # Windows INCLUDE_PATHS!
 INCLUDE_PATHS = -Iinclude -IC:/msys64/ucrt64/include
 
