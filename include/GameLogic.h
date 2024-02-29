@@ -89,21 +89,21 @@ public:
             int currentBottomLeft = 0;
             int counterBottomRight = 0;
             int currentBottomRight = 0;
-            for (int i = 3+k; i > 0; i--) {
+            for (int i = 3+k; i >= 0; i--) {
                 int j = 3+k-i;
                 if (i < constants::sizeX && j < constants::sizeY && j >= 0) {
                     // Bottom-left -> top-right
-                    if (currentBottomLeft == matrix[i-1][j] && matrix[i-1][j] != 0) 
+                    if (currentBottomLeft == matrix[i][j] && matrix[i][j] != 0) 
                         counterBottomLeft++;
                     else {
                         counterBottomLeft = 1;
-                        currentBottomLeft = matrix[i-1][j];
+                        currentBottomLeft = matrix[i][j];
                     }
                     if (counterBottomLeft >= 4) {
                         return currentBottomLeft;
                     }
                     // Bottom-right -> top-left
-                    int iRight = constants::sizeX-i;
+                    int iRight = constants::sizeX-i-1;
                     if (currentBottomRight == matrix[iRight][j] && matrix[iRight][j] != 0) 
                         counterBottomRight++;
                     else {

@@ -138,7 +138,7 @@ private:
         for (int k = 0; k < diagonalMaxIndex; k++) {
             int counterBottomLeft = 0;
             int counterBottomRight = 0;
-            for (int i = 3+k; i > 0; i--) {
+            for (int i = 3+k; i >= 0; i--) {
                 int j = 3+k-i;
                 if (i < constants::sizeX && j < constants::sizeY && j >= 0) {
                     // Bottom-left -> top-right
@@ -151,7 +151,7 @@ private:
                         amountOfWins++;
                     }
                     // Bottom-right -> top-left
-                    int iRight = constants::sizeX-i;
+                    int iRight = constants::sizeX-i-1;
                     if (matrix[iRight][j] != (maximizingPlayer ? -1 : 1))  
                         counterBottomRight++;
                     else {
