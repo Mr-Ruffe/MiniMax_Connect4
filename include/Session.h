@@ -14,6 +14,8 @@ public:
 
 private:
 	std::vector<Component *> comps;
+	std::vector<Component *> newComps;
+
 };
 
 #endif

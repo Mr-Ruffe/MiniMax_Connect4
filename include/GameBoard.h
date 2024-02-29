@@ -98,8 +98,10 @@ private:
             std::cout << "Game Over!" << std::endl;
             if (common::Turn::firstPlayer == getTurn())
                 std::cout << "Green";
-            else
+            else if (common::Turn::secondPlayer == getTurn())
                 std::cout << "Red";
+            else
+                std::cout << "No";
             std::cout << " player has won!" << std::endl;
         }
         return gameOver;

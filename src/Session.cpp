@@ -11,7 +11,7 @@ Session::Session()
 
 void Session::add(Component *c)
 {
-	comps.push_back(c);
+	newComps.push_back(c);
 }
 
 void Session::run()
@@ -52,6 +52,11 @@ void Session::run()
 			(*it)->tick();
 			(*it)->draw();
 		}
+		for (auto it = newComps.rbegin(); it != newComps.rend(); ++it) {
+			comps.push_back(*it);
+			newComps.erase(std::next(it).base());
+		}
+
 		
 		SDL_RenderPresent(sys.getRen());
 	}

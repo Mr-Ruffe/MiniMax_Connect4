@@ -15,6 +15,8 @@ namespace constants
 
     const int searchDepth = 9;
 
+    const bool visualizeMinimax = true;
+
     const common::SetupParameter playerParamater = common::SetupParameter::firstPlayer;
 }
 

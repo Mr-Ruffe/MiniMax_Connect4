@@ -16,8 +16,6 @@ void setScene(Session &ses)
 	Players *players = Players::getInstance(ses);
 	ses.add(players);
 
-	// Object *object = Object::getInstance(720);
-	// ses.add(object);
 	return;
 }
 
