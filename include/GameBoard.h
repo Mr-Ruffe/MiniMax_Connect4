@@ -3,6 +3,7 @@
 
 #include "Common.h"
 #include "Constants.h"
+#include "GameLogic.h"
 
 #include <iostream>
 #include <iomanip>
@@ -13,17 +14,6 @@ class GameBoard
 public:
     GameBoard(const common::SetupParameter parameter) : parameter(parameter) {
         matrix.resize(constants::sizeX, std::vector<int>(constants::sizeY, 0));
-    }
-
-    // Function to print the matrix
-    void printMatrix() {
-        for (int j = constants::sizeY-1; j >= 0; --j) {
-            for (int i = 0; i < constants::sizeX; ++i) {
-                std::cout << std::setw(3) << matrix[i][j];
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
     }
 
     // Find a suitable tile to place a marker at
@@ -45,8 +35,7 @@ public:
             else
                 matrix[index][row] = -1;
             changeTurn();
-            printMatrix();
-            return row;
+            GameLogic::printMatrix(matrix);
         }
         return row;
     }
