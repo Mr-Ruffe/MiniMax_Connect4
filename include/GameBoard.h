@@ -5,19 +5,21 @@
 #include "Constants.h"
 
 #include <iostream>
+#include <iomanip>
+#include <vector>
 
 class GameBoard
 {
 public:
     GameBoard(const common::SetupParameter parameter) : parameter(parameter) {
-        
+        matrix.resize(constants::sizeX, std::vector<int>(constants::sizeY, 0));
     }
 
     // Function to print the matrix
     void printMatrix() {
         for (int j = constants::sizeY-1; j >= 0; --j) {
             for (int i = 0; i < constants::sizeX; ++i) {
-                std::cout << matrix[i][j] << " ";
+                std::cout << std::setw(3) << matrix[i][j];
             }
             std::cout << std::endl;
         }
@@ -41,18 +43,12 @@ public:
             if (turn == common::Turn::firstPlayer)
                 matrix[index][row] = 1;
             else
-                matrix[index][row] = 2;
+                matrix[index][row] = -1;
             changeTurn();
             printMatrix();
             return row;
         }
         return row;
-    }
-
-    bool placeMinMaxMarker(int &col, int &row) {
-        col = 5;
-        row = placeMarker(col);
-        return (row != -1);
     }
 
     // Changes the turns between player 1 and player 2
@@ -95,7 +91,7 @@ private:
     common::Turn turn = common::Turn::firstPlayer;
 
     // GameBoard
-    int matrix[constants::sizeX][constants::sizeY] = {0};
+    std::vector<std::vector<int>> matrix;
 
 };
 

@@ -13,6 +13,8 @@ namespace constants
     const int sizeX = 7;
     const int sizeY = 6;
 
+    const int searchDepth = 9;
+
     const common::SetupParameter playerParamater = common::SetupParameter::firstPlayer;
 }
 

@@ -29,8 +29,9 @@ public:
 		}
 		else if (boardEmpty || lastTile->inPlace()) {
 			common::Turn turn = gameBoard.getTurn();
-			int col, row;
-			if (gameBoard.placeMinMaxMarker(col, row)) {
+			int col = 5;
+			int row = gameBoard.placeMarker(col);
+			if (row != -1) {
 				lastTile = Tile::getInstance(col, row, mouseX-50, turn);
 				ses.add(lastTile);
 				boardEmpty = false;
