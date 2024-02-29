@@ -13,59 +13,50 @@
 class Players : public Component
 {
 public:
-	static Players *getInstance(Session& ses) 
+	static Players *getInstance(Session &ses)
 	{
 		return new Players(constants::playerParamater, ses);
 	}
 
-	virtual void tick() {
+	virtual void tick()
+	{
 		int outputX, outputY;
 		SDL_GetMouseState(&outputX, &outputY);
-		
-		if (gameBoard.isPlayer()) {
+
+		if (gameBoard.isPlayer())
+		{
 			if (outputX)
 				mouseX = outputX;
-			setX(mouseX-50);
+			setX(mouseX - 50);
 		}
-		else if (boardEmpty || lastTile->inPlace()) {
-			common::Turn turn = gameBoard.getTurn();
-			int col = 5;
-			int row = gameBoard.placeMarker(col);
-			if (row != -1) {
-				lastTile = Tile::getInstance(col, row, mouseX-50, turn);
-				ses.add(lastTile);
-				boardEmpty = false;
-			}
+		else if (boardEmpty || lastTile->inPlace())
+		{
+			placeMarker();
 		}
 	}
 
-    virtual void draw() const {
+	virtual void draw() const
+	{
 		// Handle the address to temporary object
 		const SDL_Rect &rect = getRect();
 		SDL_RenderCopy(sys.getRen(), getTexture(), NULL, &rect);
 	}
 
-	virtual void mouseDown(const SDL_Event&) {
+	virtual void mouseDown(const SDL_Event &)
+	{
 		if (!gameBoard.isPlayer() || (!boardEmpty && !lastTile->inPlace()))
 			return;
-		common::Turn turn = gameBoard.getTurn();
-		int col = getClosestCol();
-		if (col >= 0 && col < constants::sizeX) {
-			int row = gameBoard.placeMarker(col);
-			if (row != -1) {
-				lastTile = Tile::getInstance(col, row, mouseX-50, turn);
-				ses.add(lastTile);
-				boardEmpty = false;
-			}
-		}
+		placeMarker();
 	}
 
-	void destroyTexture() { 
+	void destroyTexture()
+	{
 		SDL_DestroyTexture(texture1);
-		SDL_DestroyTexture(texture2); 
+		SDL_DestroyTexture(texture2);
 	}
 
-	SDL_Texture *getTexture() const {
+	SDL_Texture *getTexture() const
+	{
 		if (gameBoard.getTurn() == common::Turn::firstPlayer)
 			return texture1;
 		else
@@ -73,13 +64,39 @@ public:
 	}
 
 protected:
-	Players(common::SetupParameter parameter, Session& ses) : Component(0, -50, 100, 100), ses(ses), gameBoard(parameter)
+	Players(common::SetupParameter parameter, Session &ses) : Component(0, -50, 100, 100), ses(ses), gameBoard(parameter)
 	{
 		texture1 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/green_tile.png").c_str());
 		texture2 = IMG_LoadTexture(sys.getRen(), (constants::gResPath + "images/red_tile.png").c_str());
-    }
+	}
 
 private:
+	// Place marker
+	bool placeMarker()
+	{
+		int col;
+		if (gameBoard.isPlayer())
+			col = getClosestCol();
+		else
+			col = miniMax();
+		if (col >= 0 && col < constants::sizeX)
+		{
+			int row = gameBoard.placeMarker(col);
+			if (row != -1)
+			{
+				lastTile = Tile::getInstance(col, row, mouseX - 50, gameBoard.getTurn());
+				ses.add(lastTile);
+				boardEmpty = false;
+			}
+		}
+	}
+
+	int miniMax()
+	{
+		common::Turn turn = gameBoard.getTurn();
+		return 5;
+	}
+
 	// Texture references (player 1 and player 2 marker)
 	SDL_Texture *texture1, *texture2;
 
@@ -89,7 +106,7 @@ private:
 	bool boardEmpty = true;
 
 	// Reference to session in order to add objects
-	Session& ses;
+	Session &ses;
 
 	// position of mouse
 	int mouseX = 0;
@@ -97,10 +114,10 @@ private:
 	// Gameboard object
 	GameBoard gameBoard;
 
-	int getClosestCol() {
-		return (mouseX-50)/100;
+	int getClosestCol()
+	{
+		return (mouseX - 50) / 100;
 	}
-
 };
 
 #endif

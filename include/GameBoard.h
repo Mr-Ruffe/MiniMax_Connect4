@@ -12,14 +12,18 @@
 class GameBoard
 {
 public:
-    GameBoard(const common::SetupParameter parameter) : parameter(parameter) {
+    GameBoard(const common::SetupParameter parameter) : parameter(parameter)
+    {
         matrix.resize(constants::sizeX, std::vector<int>(constants::sizeY, 0));
     }
 
     // Find a suitable tile to place a marker at
-    int peekMarker(int index) {
-        for (int row = 0; row < constants::sizeY; row++) {
-            if (matrix[index][row] == 0) {
+    int peekMarker(int index)
+    {
+        for (int row = 0; row < constants::sizeY; row++)
+        {
+            if (matrix[index][row] == 0)
+            {
                 return row;
             }
         }
@@ -27,9 +31,11 @@ public:
     }
 
     // Place a marker at index. If full, return -1, else return row and switch turn
-    int placeMarker(int index) {
+    int placeMarker(int index)
+    {
         int row = peekMarker(index);
-        if (row != -1) {
+        if (row != -1)
+        {
             if (turn == common::Turn::firstPlayer)
                 matrix[index][row] = 1;
             else
@@ -41,17 +47,20 @@ public:
     }
 
     // Changes the turns between player 1 and player 2
-    void changeTurn() {
+    void changeTurn()
+    {
         turn = (turn == common::Turn::firstPlayer) ? common::Turn::secondPlayer : common::Turn::firstPlayer;
     }
 
     // Returns whose turn it is
-    common::Turn getTurn() const {
+    common::Turn getTurn() const
+    {
         return turn;
     }
 
     // Returns true if the current turn is supposed to be performed by a player
-    bool isPlayer() const {
+    bool isPlayer() const
+    {
         switch (parameter)
         {
         case common::SetupParameter::bothPlayer:
@@ -81,7 +90,6 @@ private:
 
     // GameBoard
     std::vector<std::vector<int>> matrix;
-
 };
 
 #endif
