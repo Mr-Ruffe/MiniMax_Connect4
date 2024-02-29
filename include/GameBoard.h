@@ -40,8 +40,9 @@ public:
                 matrix[index][row] = 1;
             else
                 matrix[index][row] = -1;
-            changeTurn();
             GameLogic::printMatrix(matrix);
+            if (!checkGameOver())
+                changeTurn();
         }
         return row;
     }
@@ -81,7 +82,28 @@ public:
         return false;
     }
 
+    std::vector<std::vector<int>> getMatrixCopy() {
+        return matrix;
+    }
+
+    bool isGameOver() {
+        return gameOver;
+    }
+
 private:
+
+    bool checkGameOver() {
+        if (GameLogic::gameOver(matrix)) {
+            gameOver = true;
+            std::cout << "Game Over!" << std::endl;
+            if (common::Turn::firstPlayer == getTurn())
+                std::cout << "Green";
+            else
+                std::cout << "Red";
+            std::cout << " player has won!" << std::endl;
+        }
+        return gameOver;
+    }
     // Indicates who is a player, and who is played by the computer
     const common::SetupParameter parameter;
 
@@ -90,6 +112,8 @@ private:
 
     // GameBoard
     std::vector<std::vector<int>> matrix;
+
+    bool gameOver = false;
 };
 
 #endif

@@ -9,6 +9,7 @@
 
 #include "Tile.h"
 #include "GameBoard.h"
+#include "MiniMax.h"
 
 class Players : public Component
 {
@@ -29,7 +30,7 @@ public:
 				mouseX = outputX;
 			setX(mouseX - 50);
 		}
-		else if (boardEmpty || lastTile->inPlace())
+		else if (boardEmpty || lastTile->inPlace() || gameBoard.isGameOver())
 		{
 			placeMarker();
 		}
@@ -44,7 +45,7 @@ public:
 
 	virtual void mouseDown(const SDL_Event &)
 	{
-		if (!gameBoard.isPlayer() || (!boardEmpty && !lastTile->inPlace()))
+		if (!gameBoard.isPlayer() || (!boardEmpty && !lastTile->inPlace()) || gameBoard.isGameOver())
 			return;
 		placeMarker();
 	}
@@ -75,6 +76,7 @@ private:
 	bool placeMarker()
 	{
 		int col;
+		common::Turn turn = gameBoard.getTurn();
 		if (gameBoard.isPlayer())
 			col = getClosestCol();
 		else
@@ -84,17 +86,25 @@ private:
 			int row = gameBoard.placeMarker(col);
 			if (row != -1)
 			{
-				lastTile = Tile::getInstance(col, row, mouseX - 50, gameBoard.getTurn());
+				lastTile = Tile::getInstance(col, row, mouseX - 50, turn);
 				ses.add(lastTile);
 				boardEmpty = false;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	int miniMax()
 	{
 		common::Turn turn = gameBoard.getTurn();
-		return 5;
+		std::vector<std::vector<int>> matrix = gameBoard.getMatrixCopy();
+		MoveScore minimax = MiniMax::minimaxAll(matrix, 9, (turn == common::Turn::firstPlayer));
+		minimaxVector = minimax.evaluationVector;
+		for (double d : minimaxVector)
+        	std::cout << d << ", ";
+    	std::cout << std::endl;
+		return minimax.move;
 	}
 
 	// Texture references (player 1 and player 2 marker)
@@ -105,11 +115,16 @@ private:
 
 	bool boardEmpty = true;
 
+	bool gameOver = false;
+
 	// Reference to session in order to add objects
 	Session &ses;
 
 	// position of mouse
 	int mouseX = 0;
+
+	// minimax vector
+	std::vector<double> minimaxVector;
 
 	// Gameboard object
 	GameBoard gameBoard;
