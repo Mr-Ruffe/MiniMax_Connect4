@@ -57,7 +57,6 @@ public:
 				boardEmpty = false;
 			}
 		}
-		
 	}
 
 	void destroyTexture() { 
@@ -80,6 +79,7 @@ protected:
     }
 
 private:
+	// Texture references (player 1 and player 2 marker)
 	SDL_Texture *texture1, *texture2;
 
 	// Reference to check whether tile is inplace or not

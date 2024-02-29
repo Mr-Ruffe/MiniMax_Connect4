@@ -24,26 +24,35 @@ public:
         std::cout << std::endl;
     }
 
-    // Place a marker at index. If full, return -1, else return row and switch turn
-    int placeMarker(int index) {
+    // Find a suitable tile to place a marker at
+    int peekMarker(int index) {
         for (int row = 0; row < constants::sizeY; row++) {
             if (matrix[index][row] == 0) {
-                if (turn == common::Turn::firstPlayer)
-                    matrix[index][row] = 1;
-                else
-                    matrix[index][row] = 2;
-                changeTurn();
-                printMatrix();
                 return row;
             }
         }
         return -1;
     }
 
+    // Place a marker at index. If full, return -1, else return row and switch turn
+    int placeMarker(int index) {
+        int row = peekMarker(index);
+        if (row != -1) {
+            if (turn == common::Turn::firstPlayer)
+                matrix[index][row] = 1;
+            else
+                matrix[index][row] = 2;
+            changeTurn();
+            printMatrix();
+            return row;
+        }
+        return row;
+    }
+
     bool placeMinMaxMarker(int &col, int &row) {
         col = 5;
         row = placeMarker(col);
-        return true;
+        return (row != -1);
     }
 
     // Changes the turns between player 1 and player 2
@@ -56,6 +65,7 @@ public:
         return turn;
     }
 
+    // Returns true if the current turn is supposed to be performed by a player
     bool isPlayer() const {
         switch (parameter)
         {
