@@ -58,6 +58,7 @@ public:
 		if (!gameBoard.isPlayer() || (!boardEmpty && !lastTile->inPlace()) || gameBoard.isGameOver())
 			return;
 		placeMarker();
+		updatingLabels = true;
 	}
 
 	void destroyTexture()
