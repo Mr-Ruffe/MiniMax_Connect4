@@ -38,10 +38,9 @@ public:
 
     static double minimax(std::vector<std::vector<int>> matrix, int depth, double alpha, double beta, bool maximizingPlayer)
     {
-        //printMatrix(matrix);
-        if (depth == 0 || GameLogic::gameOver(matrix))
+        if (depth <= 0 || GameLogic::gameOver(matrix))
         {
-            return evaluate(matrix);
+            return evaluate(matrix, depth);
         }
 
         if (maximizingPlayer)
@@ -73,13 +72,13 @@ public:
     }
 
 private:
-    static double evaluate(const std::vector<std::vector<int>> &matrix)
+    static double evaluate(const std::vector<std::vector<int>> &matrix, int turnsLeft)
     {
         int win = GameLogic::checkWin(matrix);
         if (win == 1)
-            return 1.0;
+            return 1.0*(1.0 + static_cast<double>(turnsLeft)/100.0);
         else if (win == -1)
-            return -1.0;
+            return -1.0*(1.0 + static_cast<double>(turnsLeft)/100.0);
         else 
             return evaluateScore(matrix);
     }
