@@ -96,9 +96,10 @@ private:
         if (GameLogic::gameOver(matrix)) {
             gameOver = true;
             std::cout << "Game Over!" << std::endl;
-            if (common::Turn::firstPlayer == getTurn())
+            int win = GameLogic::checkWin(matrix);
+            if (win == 1)
                 std::cout << "Green";
-            else if (common::Turn::secondPlayer == getTurn())
+            else if (win == -1)
                 std::cout << "Red";
             else
                 std::cout << "No";

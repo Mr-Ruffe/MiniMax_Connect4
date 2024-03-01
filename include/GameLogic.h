@@ -117,7 +117,7 @@ public:
             }
         }
 
-        // No player has won yet
+        // No player has won
         return 0;
     }
 
