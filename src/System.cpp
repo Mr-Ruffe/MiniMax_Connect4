@@ -5,7 +5,8 @@
 
 System::System()
 {
-	std::cout << "*** System::System()\n";
+	if (constants::outputStdOut)
+		std::cout << "*** System::System()\n";
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	win = SDL_CreateWindow("Application", SDL_WINDOWPOS_CENTERED,
@@ -17,7 +18,8 @@ System::System()
 
 System::~System()
 {
-	std::cout << "*** System::~System()\n";
+	if (constants::outputStdOut)
+		std::cout << "*** System::~System()\n";
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyWindow(win);
