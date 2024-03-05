@@ -66,24 +66,24 @@ public:
 
         // Horizontal
         int left = 0, right = 0;
-        for (int i = column; i <= std::min(constants::sizeX-1, column+3); i++) {
+        for (int i = column+1; i <= std::min(constants::sizeX-1, column+3); i++) {
             if (matrix[i][row] == playerMarker)
                 right++;
             else
                 break;
         }
-        for (int i = column; i >= std::max(0, column-3); i--) {
+        for (int i = column-1; i >= std::max(0, column-3); i--) {
             if (matrix[i][row] == playerMarker)
                 left++;
             else
                 break;
         }
-        if (left+right-1 >= 4)
+        if (left+right+1 >= 4)
             return temp(matrix, playerMarker);
 
         // Diagonal TL -> BR
         left = 0, right = 0;
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (column+i >= constants::sizeX || row-i < 0)
                 break;
             if (matrix[column+i][row-i] == playerMarker)
@@ -91,7 +91,7 @@ public:
             else
                 break;
         }
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (column-i < 0 || row+i >= constants::sizeY)
                 break;
             if (matrix[column-i][row+i] == playerMarker)
@@ -99,12 +99,12 @@ public:
             else
                 break;
         }
-        if (left+right-1 >= 4)
+        if (left+right+1 >= 4)
             return temp(matrix, playerMarker);
         
         // Diagonal TR -> BL
         left = 0, right = 0;
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (column-i < 0 || row-i < 0)
                 break;
             if (matrix[column-i][row-i] == playerMarker)
@@ -112,7 +112,7 @@ public:
             else
                 break;
         }
-        for (int i = 0; i <= 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             if (column+i >= constants::sizeX || row+i >= constants::sizeY)
                 break;
             if (matrix[column+i][row+i] == playerMarker)
@@ -120,7 +120,7 @@ public:
             else
                 break;
         }
-        if (left+right-1 >= 4)
+        if (left+right+1 >= 4)
             return temp(matrix, playerMarker);
 
         // No player has won

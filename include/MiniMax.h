@@ -81,11 +81,10 @@ private:
         else if (win == -1)
             return -1.0*(1.0 + static_cast<double>(turnsLeft)/100.0);
         else 
-            return 0.0;
-            /*if (GameLogic::checkBoardFull(matrix))
+            if (GameLogic::checkBoardFull(matrix))
                 return 0.0;
             else
-                return evaluateScore(matrix);*/
+                return evaluateScore(matrix);
     }
 
     static double evaluateScore(const std::vector<std::vector<int>> &matrix) {
