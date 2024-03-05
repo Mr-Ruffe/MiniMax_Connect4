@@ -17,7 +17,7 @@ namespace constants
 
     const bool visualizeMinimax = true;
 
-    const common::SetupParameter playerParamater = common::SetupParameter::noPlayer;
+    const common::SetupParameter playerParamater = common::SetupParameter::secondPlayer;
 }
 
 #endif

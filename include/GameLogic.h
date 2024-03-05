@@ -21,101 +21,107 @@ public:
     }
 
     // Function to check if game is over
-    static bool gameOver(const std::vector<std::vector<int>> &matrix)
-    { // (&matrix)
-        // Check if board is full
-        bool full = true;
-        for (int index = 0; index < constants::sizeX; index++)
-        {
-            if (matrix[index][constants::sizeY-1] == 0)
-                full = false;
-        }
-        if (full)
+    static bool gameOver(const std::vector<std::vector<int>> &matrix, int move)
+    {
+        if (checkBoardFull(matrix))
             return true;
 
-        int win = checkWin(matrix);
+        int win = checkWin(matrix, move);
         if (win != 0)
             return true;
 
         return false;
     }
 
-    // Function to check if a player has won the game
-    static int checkWin(const std::vector<std::vector<int>> &matrix)
+    // Check if board is full
+    static bool checkBoardFull(const std::vector<std::vector<int>> &matrix) {
+        for (int index = 0; index < constants::sizeX; index++)
+        {
+            if (matrix[index][constants::sizeY-1] == 0)
+                return false;
+        }
+        return true;
+    }
+
+    // Function to check if a player has won the game with added move
+    static int checkWin(const std::vector<std::vector<int>> &matrix, int column)
     {
-        // Check horizontally
-        for (int j = 0; j < constants::sizeY; j++)
-        {
-            int counter = 0;
-            int current = 0;
-            for (int i = 0; i < constants::sizeX; i++)
-            {
-                if (current == matrix[i][j] && matrix[i][j] != 0) 
-                    counter++;
-                else {
-                    counter = 1;
-                    current = matrix[i][j];
-                }
-                if (counter >= 4) {
-                    return current;
-                } 
-            }
-        }
+        int row = findLastMoveRow(matrix, column);
 
-        // Check vertically
-        for (int i = 0; i < constants::sizeX; i++)
-        {
-            int counter = 0;
-            int current = 0;
-            for (int j = 0; j < constants::sizeY; j++)
-            {
-                if (current == matrix[i][j] && matrix[i][j] != 0) 
-                    counter++;
-                else {
-                    counter = 1;
-                    current = matrix[i][j];
-                }
-                if (counter >= 4) {
-                    return current;
+        int playerMarker = matrix[column][row];
+
+        // Vertical
+        if (row >= 3) {
+            bool won = true;
+            for (int j = row; j >= row - 3; j--) {
+                if (matrix[column][j] != playerMarker) 
+                {
+                    won = false;
+                    break;
                 }
             }
+            if (won)
+                return temp(matrix, playerMarker);
         }
 
-        // Check diagonally
-        int diagonalMaxIndex = (constants::sizeX-4) + (constants::sizeY-4);
+        // Horizontal
+        int left = 0, right = 0;
+        for (int i = column+1; i <= std::min(constants::sizeX-1, column+3); i++) {
+            if (matrix[i][row] == playerMarker)
+                right++;
+            else
+                break;
+        }
+        for (int i = column-1; i >= std::max(0, column-3); i--) {
+            if (matrix[i][row] == playerMarker)
+                left++;
+            else
+                break;
+        }
+        if (left+right+1 >= 4)
+            return temp(matrix, playerMarker);
+
+        // Diagonal TL -> BR
+        left = 0, right = 0;
+        for (int i = 1; i <= 3; i++) {
+            if (column+i >= constants::sizeX || row-i < 0)
+                break;
+            if (matrix[column+i][row-i] == playerMarker)
+                right++;
+            else
+                break;
+        }
+        for (int i = 1; i <= 3; i++) {
+            if (column-i < 0 || row+i >= constants::sizeY)
+                break;
+            if (matrix[column-i][row+i] == playerMarker)
+                right++;
+            else
+                break;
+        }
+        if (left+right+1 >= 4)
+            return temp(matrix, playerMarker);
         
-        for (int k = 0; k < diagonalMaxIndex; k++) {
-            int counterBottomLeft = 0;
-            int currentBottomLeft = 0;
-            int counterBottomRight = 0;
-            int currentBottomRight = 0;
-            for (int i = 3+k; i >= 0; i--) {
-                int j = 3+k-i;
-                if (i < constants::sizeX && j < constants::sizeY && j >= 0) {
-                    // Bottom-left -> top-right
-                    if (currentBottomLeft == matrix[i][j] && matrix[i][j] != 0) 
-                        counterBottomLeft++;
-                    else {
-                        counterBottomLeft = 1;
-                        currentBottomLeft = matrix[i][j];
-                    }
-                    if (counterBottomLeft >= 4) {
-                        return currentBottomLeft;
-                    }
-                    // Bottom-right -> top-left
-                    int iRight = constants::sizeX-i-1;
-                    if (currentBottomRight == matrix[iRight][j] && matrix[iRight][j] != 0) 
-                        counterBottomRight++;
-                    else {
-                        counterBottomRight = 1;
-                        currentBottomRight = matrix[iRight][j];
-                    }
-                    if (counterBottomRight >= 4) {
-                        return currentBottomRight;
-                    }
-                }
-            }
+        // Diagonal TR -> BL
+        left = 0, right = 0;
+        for (int i = 1; i <= 3; i++) {
+            if (column-i < 0 || row-i < 0)
+                break;
+            if (matrix[column-i][row-i] == playerMarker)
+                right++;
+            else
+                break;
         }
+        for (int i = 1; i <= 3; i++) {
+            if (column+i >= constants::sizeX || row+i >= constants::sizeY)
+                break;
+            if (matrix[column+i][row+i] == playerMarker)
+                right++;
+            else
+                break;
+        }
+        if (left+right+1 >= 4)
+            return temp(matrix, playerMarker);
 
         // No player has won
         return 0;
@@ -133,6 +139,25 @@ public:
                 moves.push_back(indexNew);
         }
         return moves;
+    }
+
+private:
+    // Find the row of the last placed tile
+    static int findLastMoveRow(const std::vector<std::vector<int>> &matrix, int column) 
+    {
+        for (int j = 1; j < constants::sizeY; j++) 
+        {
+            if (matrix[column][j] == 0) {
+                return j-1;
+            }
+        }
+        return constants::sizeY-1;
+    }
+
+    static int temp(const std::vector<std::vector<int>> &matrix, int playerMarker) {
+        // std::cout << "Player " << playerMarker << " has won." << std::endl;
+        // printMatrix(matrix);
+        return playerMarker;
     }
 
 };

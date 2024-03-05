@@ -41,7 +41,7 @@ public:
             else
                 matrix[index][row] = -1;
             GameLogic::printMatrix(matrix);
-            if (!checkGameOver())
+            if (!checkGameOver(index))
                 changeTurn();
         }
         return row;
@@ -92,11 +92,11 @@ public:
 
 private:
 
-    bool checkGameOver() {
-        if (GameLogic::gameOver(matrix)) {
+    bool checkGameOver(int index) {
+        if (GameLogic::gameOver(matrix, index)) {
             gameOver = true;
             std::cout << "Game Over!" << std::endl;
-            int win = GameLogic::checkWin(matrix);
+            int win = GameLogic::checkWin(matrix, index);
             if (win == 1)
                 std::cout << "Green";
             else if (win == -1)

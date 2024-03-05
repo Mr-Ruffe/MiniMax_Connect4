@@ -26,7 +26,7 @@ public:
         MoveScore bestEval{2.0*(maximizingPlayer ? -1 : 1), 0};
         for (int move : GameLogic::getPossibleMoves(matrix))
             {
-                double eval = minimax(placeMarker(matrix, move, maximizingPlayer), depth-1, -2.0, 2.0, !maximizingPlayer);
+                double eval = minimax(matrix, move, maximizingPlayer, depth-1, -2.0, 2.0);
                 bestEval.evaluationVector[move] = eval;
                 if ((eval > bestEval.evaluation && maximizingPlayer) || (eval < bestEval.evaluation && !maximizingPlayer)) {
                     bestEval.evaluation = eval;
@@ -36,19 +36,20 @@ public:
         return bestEval;
     }
 
-    static double minimax(std::vector<std::vector<int>> matrix, int depth, double alpha, double beta, bool maximizingPlayer)
+    static double minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta)
     {
-        if (depth <= 0 || GameLogic::gameOver(matrix))
+        placeMarker(matrix, move, maximizingPlayer);
+        if (depth <= 0 || GameLogic::gameOver(matrix, move))
         {
-            return evaluate(matrix, depth);
+            return evaluate(matrix, depth, move);
         }
 
-        if (maximizingPlayer)
+        if (!maximizingPlayer)
         {
             double bestEval{-2.0};
             for (int move : GameLogic::getPossibleMoves(matrix))
             {
-                double eval = minimax(placeMarker(matrix, move, maximizingPlayer), depth - 1, alpha, beta, false);
+                double eval = minimax(matrix, move, !maximizingPlayer, depth - 1, alpha, beta);
                 bestEval = std::max(eval, bestEval);
                 alpha = std::max(alpha, eval);
                 if (beta <= alpha) 
@@ -61,7 +62,7 @@ public:
             double bestEval{2.0};
             for (int move : GameLogic::getPossibleMoves(matrix))
             {
-                double eval = minimax(placeMarker(matrix, move, maximizingPlayer), depth - 1, alpha, beta, true);
+                double eval = minimax(matrix, move, !maximizingPlayer, depth - 1, alpha, beta);
                 bestEval = std::min(eval, bestEval);
                 beta = std::min(beta, eval);
                 if (beta <= alpha)
@@ -72,15 +73,18 @@ public:
     }
 
 private:
-    static double evaluate(const std::vector<std::vector<int>> &matrix, int turnsLeft)
+    static double evaluate(const std::vector<std::vector<int>> &matrix, int turnsLeft, int lastMove)
     {
-        int win = GameLogic::checkWin(matrix);
+        int win = GameLogic::checkWin(matrix, lastMove);
         if (win == 1)
             return 1.0*(1.0 + static_cast<double>(turnsLeft)/100.0);
         else if (win == -1)
             return -1.0*(1.0 + static_cast<double>(turnsLeft)/100.0);
         else 
-            return evaluateScore(matrix);
+            if (GameLogic::checkBoardFull(matrix))
+                return 0.0;
+            else
+                return evaluateScore(matrix);
     }
 
     static double evaluateScore(const std::vector<std::vector<int>> &matrix) {
@@ -165,7 +169,7 @@ private:
         return amountOfWins; 
     }
 
-    static std::vector<std::vector<int>> placeMarker(std::vector<std::vector<int>> matrix, int column, bool maximizingPlayer) {
+    static void placeMarker(std::vector<std::vector<int>> &matrix, int column, bool maximizingPlayer) {
         
         for (int row = 0; row < constants::sizeY; row++) {
             if (matrix[column][row] == 0) {
@@ -176,7 +180,6 @@ private:
                 break;
             }
         }
-        return matrix;
     }
 };
 
