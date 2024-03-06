@@ -1,12 +1,14 @@
 #include "Session.h"
 #include <SDL2/SDL.h>
 #include "System.h"
+#include "Constants.h"
 
 #include <iostream>
 
 Session::Session()
 {
-	std::cout << "*** Session::Session()\n";
+	if (constants::outputStdOut)
+		std::cout << "*** Session::Session()\n";
 }
 
 void Session::add(Component *c)
