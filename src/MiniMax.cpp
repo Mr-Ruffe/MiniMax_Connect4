@@ -24,21 +24,33 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
 {
     // Place marker from current move
     placeMarker(matrix, move, maximizingPlayer);
+
+    // Verify if depth is reached or game is over
     if (depth <= 0 || GameLogic::gameOver(matrix, move))
     {
+        // Return evaluation score if game is over
         return evaluate(matrix, depth, move);
     }
 
     // Start next move
     maximizingPlayer = !maximizingPlayer;
+
+    // Making the move based on whether player is maximizing or not
     if (maximizingPlayer)
     {
+        // Sets bestEval to something smaller than reasonable
         double bestEval{-2.0};
+
+        // Iterate through possible moves
         for (int move : GameLogic::getPossibleMoves(matrix))
         {
+            // Evaluate score for the possible move recursively
             double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
+            // Store the best possible move, which is the largest move
             bestEval = std::max(eval, bestEval);
+            // Store the best move from a maximizing perspective in alpha
             alpha = std::max(alpha, eval);
+            // Compare beta & alpha - if move is already determined to be pruned: break
             if (beta <= alpha)
                 break;
         }
@@ -46,15 +58,23 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
     }
     else
     {
+        // Sets bestEval to something larger than reasonable
         double bestEval{2.0};
+
+        // Iterate through possible moves
         for (int move : GameLogic::getPossibleMoves(matrix))
         {
+            // Evaluate score for the possible move recursively
             double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
+            // Store the best possible move, which is the smallest move
             bestEval = std::min(eval, bestEval);
+            // Store the best move from a minimizing perspective in beta
             beta = std::min(beta, eval);
+            // Compare beta & alpha - if move is already determined to be pruned: break
             if (beta <= alpha)
                 break;
         }
+
         return bestEval;
     }
 }
