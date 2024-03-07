@@ -68,4 +68,4 @@ To improve this, the addition of how many moves are left on depth is added. If s
 
 ### Potential improvments
 * Variable depth depending on moves left, since once columns are blocked out, less moves are needed.
-* Evaluation is performed too often.
+* Evaluation is performed too often. It's less than a victory, and should thus only be evaluated based on alpha-beta as well.
