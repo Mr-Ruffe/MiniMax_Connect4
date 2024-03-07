@@ -22,13 +22,15 @@ MoveScore MiniMax::minimaxAll(std::vector<std::vector<int>> matrix, int depth, b
 
 double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta)
 {
+    // Place marker from current move
     placeMarker(matrix, move, maximizingPlayer);
-    maximizingPlayer = !maximizingPlayer;
     if (depth <= 0 || GameLogic::gameOver(matrix, move))
     {
         return evaluate(matrix, depth, move);
     }
 
+    // Start next move
+    maximizingPlayer = !maximizingPlayer;
     if (maximizingPlayer)
     {
         double bestEval{-2.0};
