@@ -80,7 +80,7 @@ Players::Players(common::SetupParameter parameter, Session &ses) : Component(0, 
         {
             std::stringstream ss;
             ss << std::fixed << std::setprecision(2) << minimaxVector[i];
-            Label *currentLabel = Label::getInstance(75 + i * 100, 700, 50, 50, ss.str());
+            Label *currentLabel = Label::getInstance(125 + i * 100, 700, 50, 50, ss.str());
             ses.add(currentLabel);
             labelVector.push_back(currentLabel);
         }
@@ -131,7 +131,7 @@ int Players::miniMax()
 
 int Players::getClosestCol() const
 {
-    return (mouseX - 50) / 100;
+    return (mouseX - 100) / 100;
 }
 
 void Players::updateLabels()

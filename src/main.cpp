@@ -9,7 +9,7 @@
 void setScene(Session &ses)
 {
 	// Displaying the board
-	BoardTile *boardTile = BoardTile::getInstance(50, 100, constants::sizeX, constants::sizeY);
+	BoardTile *boardTile = BoardTile::getInstance(100, 100, constants::sizeX, constants::sizeY);
 	ses.add(boardTile);
 
 	// Treating the creation of objects

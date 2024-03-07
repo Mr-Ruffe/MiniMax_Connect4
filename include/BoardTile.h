@@ -43,12 +43,14 @@ protected:
 	/// @param sizeY Amount of tiles in Y-direction.
 	/// @param frameWidth Width of the texture used per tile.
 	/// @param frameHeight Height of the texture used per tile.
-	/// @param path Path to the texture used.
-	BoardTile(int x, int y, int sizeX, int sizeY, int frameWidth, int frameHeight, const std::string &path);
+	/// @param tilePath Path to the tile-texture used.
+	/// @param basePath Pat to the base-texture used.
+	BoardTile(int x, int y, int sizeX, int sizeY, int frameWidth, int frameHeight, const std::string &tilePath, const std::string &basePath);
 
 private:
 	// The texture used by the object.
 	SDL_Texture *texture;
+	SDL_Texture *baseTexture;
 
 	// The set sizes of the game-board (amount of tiles).
 	const int sizeX, sizeY;

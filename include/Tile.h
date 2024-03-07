@@ -10,72 +10,54 @@
 #include "Component.h"
 #include "Constants.h"
 
-#include "Players.h"
-
+/// @brief The tile object displaying the red or green tile.
 class Tile : public Component
 {
 public:
-    static Tile *getInstance(int x, int y, int xInit, common::Turn turn)
-	{
-        std::string image;
-        if (turn == common::Turn::firstPlayer)
-            image = constants::gResPath + "images/green_tile.png";
-        else
-            image = constants::gResPath + "images/red_tile.png";
-		return new Tile(x, y, xInit, image);
-	}
+    /// @brief Acts as a constructor and restricts the user to create Tile-objects in other ways.
+	/// @param x The target tile-place of the tile in x position.
+	/// @param y The target tile-place of the tile in y position.
+    /// @param xInit The initial position of where the tile should start.
+    /// @param turn The indicator of whose turn it is.
+    /// @return A new Tile-instance.
+    static Tile *getInstance(int x, int y, int xInit, common::Turn turn);
 
-	virtual ~Tile()
-	{
-		destroyTexture();
-	}
+	/// @brief Destructor of the Tile-object.
+	virtual ~Tile();
 
-	virtual void draw() const
-	{
-		// Handle the address to temporary object
-		const SDL_Rect &rect = getRect();
-		SDL_RenderCopy(sys.getRen(), getTexture(), NULL, &rect);
-	}
-	virtual void tick() 
-    {
-        if (finalPos)
-            return;
-        counter++;
-        if (counter >= 5) {
-            counter = 0; 
-            SDL_Rect rect = getRect();
-            if (rect.x > targetX)
-                moveX(-1);
-            else if (rect.x < targetX)
-                moveX(1);
-            else 
-            {
-                if (rect.y >= targetY)
-                    finalPos = true;
-                else
-                  moveY(1);
-            }
-        }
-    }
+	/// @brief Called every tick for updating the object in the renderer.
+	virtual void draw() const;
 
-    bool inPlace() {
-        return finalPos;
-    }
+	/// @brief Called from Session every tick. Updates the position until final.
+	virtual void tick();
 
-	void destroyTexture() { SDL_DestroyTexture(texture); }
+    /// @brief Check if the tile is in place.
+    /// @return True if it is in place. Else false.
+    bool inPlace();
 
-	SDL_Texture *getTexture() const { return texture; }
+	/// @brief Destroys the texture.
+	void destroyTexture();
 
 protected:
-	Tile(int x, int y, int xInit, const std::string &path) : Component(xInit, -50, 100, 100), targetX(x*100+50), targetY(constants::sizeY*100 - y*100)
-	{
-		texture = IMG_LoadTexture(sys.getRen(), path.c_str());
-	}
+	/// @brief Constructor of the tile-object.
+	/// @param x The target tile-place of the tile in x position.
+	/// @param y The target tile-place of the tile in y position.
+    /// @param xInit The initial position of where the tile should start.
+    /// @param turn The indicator of whose turn it is.
+	/// @param path Path to the texture used.
+	Tile(int x, int y, int xInit, const std::string &path);
 
 private:
+	// The texture used.
 	SDL_Texture *texture;
+
+    // The final position of the tile.
     const int targetX, targetY;
+
+    // Counter to prevent too fast movement.
     int counter = 0;
+
+    // Boolean indicating final position.
     bool finalPos = false;
 };
 
