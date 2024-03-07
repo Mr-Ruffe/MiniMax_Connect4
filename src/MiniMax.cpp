@@ -23,17 +23,18 @@ MoveScore MiniMax::minimaxAll(std::vector<std::vector<int>> matrix, int depth, b
 double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta)
 {
     placeMarker(matrix, move, maximizingPlayer);
+    maximizingPlayer = !maximizingPlayer;
     if (depth <= 0 || GameLogic::gameOver(matrix, move))
     {
         return evaluate(matrix, depth, move);
     }
 
-    if (!maximizingPlayer)
+    if (maximizingPlayer)
     {
         double bestEval{-2.0};
         for (int move : GameLogic::getPossibleMoves(matrix))
         {
-            double eval = minimax(matrix, move, !maximizingPlayer, depth - 1, alpha, beta);
+            double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
             bestEval = std::max(eval, bestEval);
             alpha = std::max(alpha, eval);
             if (beta <= alpha)
@@ -46,7 +47,7 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
         double bestEval{2.0};
         for (int move : GameLogic::getPossibleMoves(matrix))
         {
-            double eval = minimax(matrix, move, !maximizingPlayer, depth - 1, alpha, beta);
+            double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
             bestEval = std::min(eval, bestEval);
             beta = std::min(beta, eval);
             if (beta <= alpha)
