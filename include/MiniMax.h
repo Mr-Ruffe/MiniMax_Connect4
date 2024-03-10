@@ -35,14 +35,19 @@ public:
     /// @return MoveScore containing evaluation on all the different moves.
     static MoveScore minimaxAll(std::vector<std::vector<int>> matrix, int depth, bool maximizingPlayer);
 
-    /// @brief Recursive minimax function with added alpha-beta-pruning.
+
+    /// @brief Recursive minimax function with added alpha-beta-pruning. The function
+    /// is designed to determine the best possible move based on an evaluation. The
+    /// matrix is a copy of the gameboard from the previous move, and is populated in the 
+    /// function with the current move. The function will return a double value based 
+    /// on what can be confirmed with the remaining depth to the search. 
     /// @param matrix Reference to the raw integer gameboard.
-    /// @param move The column index of the current index.
-    /// @param maximizingPlayer Indicator if the player is 1 or -1 (true or false).
-    /// @param depth The reamaining depth of the current search.
-    /// @param alpha Alpha parameter for pruning.
-    /// @param beta Beta parameter for pruning.
-    /// @return The evaluation of the current move.
+    /// @param move The column index of the current move just performed.
+    /// @param maximizingPlayer Indicator if the player is 1 or -1 on the gameboard (true or false).
+    /// @param depth The reamaining depth of the current recursive search.
+    /// @param alpha Alpha parameter for pruning based on the maxi.
+    /// @param beta Beta parameter for pruning based on the mini.
+    /// @return The evaluation of the current move, meaning a score between (-2.0, 2.0)
     static double minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta);
 
 private:

@@ -54,6 +54,7 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
             if (beta <= alpha)
                 break;
         }
+        // Return best evaluation
         return bestEval;
     }
     else
@@ -74,7 +75,7 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
             if (beta <= alpha)
                 break;
         }
-
+        // Return best evaluation
         return bestEval;
     }
 }
