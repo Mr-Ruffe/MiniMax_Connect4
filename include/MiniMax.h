@@ -48,7 +48,7 @@ public:
     /// @param alpha Alpha parameter for pruning based on the maxi.
     /// @param beta Beta parameter for pruning based on the mini.
     /// @return The evaluation of the current move, meaning a score between (-2.0, 2.0)
-    static double minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta);
+    static double minimax(std::vector<std::vector<int>> &matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta);
 
 private:
     /// @brief Main method for evaluating the outcome of the planned move.
@@ -74,6 +74,11 @@ private:
     /// @param column Column index of the chosen move.
     /// @param maximizingPlayer Indicator if the player is 1 or -1 (true or false).
     static void placeMarker(std::vector<std::vector<int>> &matrix, int column, bool maximizingPlayer);
+
+        /// @brief Removes a marker on the chosen column.
+    /// @param matrix Reference to the raw integer gameboard.
+    /// @param column Column index of the chosen move.
+    static void removeMarker(std::vector<std::vector<int>> &matrix, int column);
 };
 
 #endif

@@ -20,16 +20,24 @@ MoveScore MiniMax::minimaxAll(std::vector<std::vector<int>> matrix, int depth, b
     return bestEval;
 }
 
-double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta)
+double MiniMax::minimax(std::vector<std::vector<int>> &matrix, int move, bool maximizingPlayer, int depth, double alpha, double beta)
 {
     // Place marker from current move
     placeMarker(matrix, move, maximizingPlayer);
 
+    // The evaluation value
+    double bestEval;
+
     // Verify if depth is reached or game is over
     if (depth <= 0 || GameLogic::gameOver(matrix, move))
     {
-        // Return evaluation score if game is over
-        return evaluate(matrix, depth, move);
+         // Return evaluation score if game is over
+        bestEval = evaluate(matrix, depth, move);
+
+        // Remove marker from the current move
+        removeMarker(matrix, move);
+
+        return bestEval;
     }
 
     // Start next move
@@ -39,13 +47,13 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
     if (maximizingPlayer)
     {
         // Sets bestEval to something smaller than reasonable
-        double bestEval{-2.0};
+        bestEval = -2.0;
 
         // Iterate through possible moves
-        for (int move : GameLogic::getPossibleMoves(matrix))
+        for (int nextMove : GameLogic::getPossibleMoves(matrix))
         {
             // Evaluate score for the possible move recursively
-            double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
+            double eval = minimax(matrix, nextMove, maximizingPlayer, depth - 1, alpha, beta);
             // Store the best possible move, which is the largest move
             bestEval = std::max(eval, bestEval);
             // Store the best move from a maximizing perspective in alpha
@@ -54,19 +62,17 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
             if (beta <= alpha)
                 break;
         }
-        // Return best evaluation
-        return bestEval;
     }
     else
     {
         // Sets bestEval to something larger than reasonable
-        double bestEval{2.0};
+        bestEval = 2.0;
 
         // Iterate through possible moves
-        for (int move : GameLogic::getPossibleMoves(matrix))
+        for (int nextMove : GameLogic::getPossibleMoves(matrix))
         {
             // Evaluate score for the possible move recursively
-            double eval = minimax(matrix, move, maximizingPlayer, depth - 1, alpha, beta);
+            double eval = minimax(matrix, nextMove, maximizingPlayer, depth - 1, alpha, beta);
             // Store the best possible move, which is the smallest move
             bestEval = std::min(eval, bestEval);
             // Store the best move from a minimizing perspective in beta
@@ -75,9 +81,13 @@ double MiniMax::minimax(std::vector<std::vector<int>> matrix, int move, bool max
             if (beta <= alpha)
                 break;
         }
-        // Return best evaluation
-        return bestEval;
     }
+
+    // Remove marker from the current move
+    removeMarker(matrix, move);
+
+    // Return best evaluation
+    return bestEval;
 }
 
 double MiniMax::evaluate(const std::vector<std::vector<int>> &matrix, int turnsLeft, int lastMove)
@@ -199,6 +209,19 @@ void MiniMax::placeMarker(std::vector<std::vector<int>> &matrix, int column, boo
             break;
         }
     }
+}
+
+void MiniMax::removeMarker(std::vector<std::vector<int>> &matrix, int column)
+{
+    int row = 1;
+    for (; row < constants::sizeY; row++)
+    {
+        if (matrix[column][row] == 0)
+        {
+            break;
+        }
+    }
+    matrix[column][--row] = 0;
 }
 
 MoveScore::MoveScore(double evaluation, int move) : evaluation(evaluation), move(move)
